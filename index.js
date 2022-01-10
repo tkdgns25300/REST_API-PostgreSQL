@@ -3,8 +3,6 @@ const app = express();
 
 const PORT = 3000;
 
-app.use(express.json()) // => req.body
-
 
 // ROUTES //
 
@@ -14,10 +12,17 @@ app.use(express.json()) // => req.body
 
 // create a todo
 
+app.post("/todos", async (req, res) => {
+    try {
+        console.log(req.body);
+    } catch(err) {
+        console.error(err.message);
+    }
+})
+
 // update a todo
 
 // delete a todo
-
 
 
 
