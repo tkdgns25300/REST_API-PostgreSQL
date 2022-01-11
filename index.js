@@ -1,4 +1,5 @@
 const express = require('express');
+const { Pool } = require('pg/lib');
 const app = express();
 
 const PORT = 3000;
@@ -14,7 +15,13 @@ const PORT = 3000;
 
 app.post("/todos", async (req, res) => {
     try {
-        console.log(req.body);
+        const { description } = req.body;
+        const newTodo = await Pool.query(
+            "INSERT INTO todo (description) VALUES ($1) RETURNING *",
+            [description]
+        );
+
+        res.json(newTodo.rows[0])
     } catch(err) {
         console.error(err.message);
     }
