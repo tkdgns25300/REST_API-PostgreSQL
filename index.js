@@ -7,7 +7,14 @@ app.use(express.json());
 
 
 // get all todos
-
+app.get("/todos", async (req, res) => {
+    try {
+        const todoList = await pool.query("SELECT * FROM todo");
+        res.json(todoList.rows);
+    } catch(err) {
+        console.error(err.message);
+    }
+})
 
 // get a todo
 
@@ -22,7 +29,7 @@ app.post("/todos", async (req, res) => {
         );
         res.json(newTodo.rows[0]);
     } catch(err) {
-        console.error(err.message)
+        console.error(err.message);
     }
 })
 
