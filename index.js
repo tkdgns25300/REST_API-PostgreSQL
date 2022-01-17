@@ -22,7 +22,7 @@ app.get("/todos/:id", async (req, res) => {
     try {
         const todoId = req.params.id;
         const todo = await pool.query(
-            "SELECT * FROM todo WHERE todo_id = ($1)", 
+            "SELECT * FROM todo WHERE todo_id = $1", 
             [todoId]
         );
         res.json(todo.rows[0]);
@@ -36,7 +36,7 @@ app.post("/todos", async (req, res) => {
     try {
         const { description } = req.body;
         const newTodo = await pool.query(
-            "INSERT INTO todo (description) VALUES ($1) RETURNING * ", 
+            "INSERT INTO todo (description) VALUES $1 RETURNING * ", 
             [description]
         );
         res.json(newTodo.rows[0]);
@@ -46,7 +46,19 @@ app.post("/todos", async (req, res) => {
 })
 
 // update a todo
-
+app.put("/todos/:id", async (req, res) => {
+    try {
+        const todoId = req.params.id;
+        const { description } = req.body;
+        const updatedTodo = await pool.query(
+            "UPDATE todo SET description = $2 WHERE todo_id = $1 RETURNING * ",
+            [todoId, description]
+        );
+        res.json(updatedTodo.rows[0]);
+    } catch(err) {
+        console.error(err.message);
+    }
+})
 
 // delete a todo
 
