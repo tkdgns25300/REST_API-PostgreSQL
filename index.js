@@ -1,4 +1,5 @@
 const express = require('express');
+const res = require('express/lib/response');
 const app = express();
 const pool = require('./db');
 const PORT = 3000;
@@ -17,7 +18,18 @@ app.get("/todos", async (req, res) => {
 })
 
 // get a todo
-
+app.get("/todos/:id", async (req, res) => {
+    try {
+        const todoId = req.params.id;
+        const todo = await pool.query(
+            "SELECT * FROM todo WHERE todo_id = ($1)", 
+            [todoId]
+        );
+        res.json(todo.rows[0]);
+    } catch(err) {
+        console.error(err.message);
+    }
+})
 
 // create a todo
 app.post("/todos", async (req, res) => {
