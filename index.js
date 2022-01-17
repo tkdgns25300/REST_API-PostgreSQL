@@ -36,7 +36,7 @@ app.post("/todos", async (req, res) => {
     try {
         const { description } = req.body;
         const newTodo = await pool.query(
-            "INSERT INTO todo (description) VALUES $1 RETURNING * ", 
+            "INSERT INTO todo (description) VALUES ($1) RETURNING * ", 
             [description]
         );
         res.json(newTodo.rows[0]);
@@ -51,10 +51,10 @@ app.put("/todos/:id", async (req, res) => {
         const todoId = req.params.id;
         const { description } = req.body;
         const updatedTodo = await pool.query(
-            "UPDATE todo SET description = $2 WHERE todo_id = $1 RETURNING * ",
+            "UPDATE todo SET description = $2 WHERE todo_id = $1",
             [todoId, description]
         );
-        res.json(updatedTodo.rows[0]);
+        res.json("Todo was updated!");
     } catch(err) {
         console.error(err.message);
     }
@@ -68,12 +68,11 @@ app.delete("/todos/:id", async (req, res) => {
             "DELETE FROM todo WHERE todo_id = $1 RETURNING * ",
             [todoId]
         );
-        res.json(deletedTodo.rows[0]);
+        res.json("Todo was successfully deleted!");
     } catch(err) {
         console.error(err.message);
     }
 })
-
 
 
 app.listen(PORT, () => {
